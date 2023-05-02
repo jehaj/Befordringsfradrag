@@ -1,5 +1,5 @@
 # Befordringsfradrag
-Anslå Befordringsfradrag (Kørselsfradrag) med Google Timeline
+Anslå Befordringsfradrag (Kørselsfradrag) med Google Tidslinje.
 
 Detajler om befordingsfradrag kan findes på https://skat.dk/data.aspx?oid=2367237.
 
