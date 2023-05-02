@@ -15,6 +15,7 @@ class Trip:
         self.start_loc: tuple[float, float] = start_loc
         self.end_loc: tuple[float, float] = end_loc
         self.distance = distance / 1000
+        # should save date
 
     def __repr__(self) -> str:
         return f"L({self.start_loc}, {self.end_loc}, {self.distance:.2f})"
@@ -83,4 +84,6 @@ if __name__ == "__main__":
         trips = list(filter(lambda x: get_distance(workplace, x.end_loc) < 1, trips))
         print(f"You visited work {len(trips)} time{'s' if len(trips) != 1 else ''}.")
         print(trips)
+        long_trips = list(filter(lambda x: x.distance > 12, trips))
+        print(f"{len(long_trips)} of them were over 12 km.")
         print("Done.")
