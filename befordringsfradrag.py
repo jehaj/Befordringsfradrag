@@ -60,6 +60,7 @@ if __name__ == "__main__":
     # (e.g. Institute of Computer Science).
     # Go to Google Maps and right-click on your workplace to copy
     # the coordinates and paste them in here.
+    min_distance = 3
     workplace: tuple[float, float] = (56.17206821062701, 10.188144768467062)
 
     folderpath: Path = \
@@ -69,21 +70,23 @@ if __name__ == "__main__":
         lambda x: Path(folderpath, x),
         os.listdir(folderpath)))
 
-    filepaths: list[Path] = list(map(
-        lambda x: Path(year_folders[-2], x),
-        get_json_paths(year_folders[-2])))
-
-    filepath: Path = filepaths[-2]
-
-    with open(filepath, 'r', encoding="utf-8") as file:
-        document: list[dict] = json.load(file)["timelineObjects"]
-        document: list[dict] = list(filter(
-            lambda x: next(iter(x)) == "activitySegment",
-            document))
-        trips = list(map(activity_segment_to_trip, document))
-        trips = list(filter(lambda x: get_distance(workplace, x.end_loc) < 1, trips))
-        print(f"You visited work {len(trips)} time{'s' if len(trips) != 1 else ''}.")
-        print(trips)
-        long_trips = list(filter(lambda x: x.distance > 12, trips))
-        print(f"{len(long_trips)} of them were over 12 km.")
-        print("Done.")
+    filepaths: list[Path] = []
+    for year in year_folders:
+        filepaths.extend(list(map(
+        lambda x: Path(year, x),
+        get_json_paths(year))))
+    print(filepaths[87:])
+    long_trips = []
+    for filepath in filepaths[87:]:
+        with open(filepath, 'r', encoding="utf-8") as file:
+            document: list[dict] = json.load(file)["timelineObjects"]
+            document: list[dict] = list(filter(
+                lambda x: next(iter(x)) == "activitySegment",
+                document))
+            trips = list(map(activity_segment_to_trip, document))
+            trips = list(filter(lambda x: get_distance(workplace, x.end_loc) < 2, trips))
+            trips_over_min = list(filter(lambda x: x.distance > min_distance, trips))
+            long_trips.extend(trips_over_min)
+        # print(f"You visited work {len(trips)} time{'s' if len(trips) != 1 else ''}.")
+    print(f"{len(long_trips)} of them were over {min_distance} km.")
+    print("Done.")
